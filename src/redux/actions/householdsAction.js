@@ -1,6 +1,6 @@
 import axios from "axios"
-import { toast } from "react-toastify"
 import * as actions from "./actionTypes"
+import { toast } from "react-toastify"
 const householdAdded = () => toast.success("Household Added", { autoClose: 2000, })
 const householdAddedError = (msg) => toast.error("Error in houshold creation: " + msg, { autoClose: 5000, })
 const householdUpdated = () => toast.success("Household Updated", { autoClose: 2000, })

@@ -4,6 +4,7 @@ import { expenseTypesReducer } from "./expenseTypesReducer"
 import { usersReducer } from "./usersReducer"
 import { householdReducer } from "./householdReducer"
 import { membersReducer } from "./membersReducer"
+import { periodicExpenseReducer } from "./periodicExpenseReducer"
 
 export default combineReducers({
     loginReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     usersReducer,
     householdReducer,
     membersReducer,
+    periodicExpenseReducer,
 })

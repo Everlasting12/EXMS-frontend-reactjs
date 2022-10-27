@@ -24,6 +24,8 @@ import UserForm, { getUserById } from "./components/UserForm";
 import Members from "./components/Members";
 import HouseholdForm, { getHouseholdById } from "./components/HouseholdForm";
 import MemberForm, { getMemberById } from "./components/MemberForm";
+import PeriodicPayments from "./components/PeriodicPayments";
+import PeriodicExpenseForm from "./components/PeriodicExpenseForm";
 
 const router = createBrowserRouter([{
   path: "/",
@@ -87,7 +89,11 @@ const router = createBrowserRouter([{
         },
         {
           path: "periodicExpenses",
-          element: <Users />
+          element: <PeriodicPayments />
+        },
+        {
+          path: "periodicExpenses/periodicExpenseForm",
+          element: <PeriodicExpenseForm />
         },
         {
           path: "dailyExpenses",

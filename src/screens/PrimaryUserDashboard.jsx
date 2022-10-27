@@ -48,6 +48,7 @@ const PrimaryUserDashboard = () => {
     dispatch(getAllExpenseTypesAction());
     dispatch(getloggedInUserDetails());
     dispatch(getAllMembersAction());
+    dispatch(getAllExpenseTypesAction());
   }, []);
 
   useEffect(() => {
