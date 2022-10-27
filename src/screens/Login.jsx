@@ -68,7 +68,7 @@ const Login = () => {
 
   return (
     <div className="h-[calc(100vh-72px)] w-full flex justify-around items-center bg-slate-200">
-      <div className="text-center">
+      <div className="text-center hidden lg:block">
         <img src={LoginImage} alt="login_image" width={400} />
         <h4 className="mt-4 text-xl font-semibold">
           Let us help you, <br /> Manage your

@@ -1,6 +1,9 @@
 import axios from "axios"
 import jwtDecode from "jwt-decode"
+import { toast } from "react-toastify"
 import * as actions from "./actionTypes"
+
+const logoutSuccessful = () => toast.success("Logout Successful!")
 
 const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "authentication"
 
@@ -45,5 +48,6 @@ export const getloggedInUserDetails = () => async (dispatch, getState) =>
 export const logoutUser = () =>
 {
     sessionStorage.setItem("token", "")
+    logoutSuccessful();
     return { type: actions.LOGOUT_USER }
 }

@@ -59,14 +59,14 @@ const Register = () => {
   const isAdmin = "l";
   return (
     <div className="h-screen w-full flex justify-around items-center bg-slate-200">
-      <div className="text-center">
+      <div className="text-center hidden lg:block">
         <img src={LoginImage} alt="login_image" width={400} />
         <h4 className="mt-4 text-xl font-semibold">
           Let us help you, <br /> Manage your{" "}
           <span className="font-bold text-sky-600">Expense</span>
         </h4>
       </div>
-      <div className="h-[544px] mt-[-40px] bg-white w-[30%] px-5 py-1 shadow-md rounded-md">
+      <div className="h-[544px] mt-[-40px] bg-white w-[90%] sm:w-[60%] md:w-[50%] lg:w-[30%] px-5 py-1 shadow-md rounded-md">
         <form
           onSubmit={handleSubmit(submitSignUp)}
           className="text-sm flex flex-col justify-between"

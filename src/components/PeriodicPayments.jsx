@@ -74,13 +74,13 @@ const PeriodicPayments = () => {
               <tr className="sticky top-0 font-nunito">
                 <th
                   scope="col"
-                  className="sticky top-0 w-10 py-2 px-6 font-extralight"
+                  className="sticky top-0 py-2 px-6 font-extralight"
                 >
                   No.
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[30%] py-2 px-6 font-extralight"
                 >
                   Expense Type
                 </th>
@@ -121,6 +121,11 @@ const PeriodicPayments = () => {
                     className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {pe.paidBy}
+                    {/* {pe.paidBy.map((name) => (
+                      <span className="block" key={name}>
+                        {name}
+                      </span>
+                    ))} */}
                   </td>
                   <td className="py-2 px-6 flex ">
                     <Link to={`periodicExpenseForm/${pe._id}`}>

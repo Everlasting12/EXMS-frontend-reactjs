@@ -25,7 +25,7 @@ import Members from "./components/Members";
 import HouseholdForm, { getHouseholdById } from "./components/HouseholdForm";
 import MemberForm, { getMemberById } from "./components/MemberForm";
 import PeriodicPayments from "./components/PeriodicPayments";
-import PeriodicExpenseForm from "./components/PeriodicExpenseForm";
+import PeriodicExpenseForm, { getPeriodicExpenseById } from "./components/PeriodicExpenseForm";
 
 const router = createBrowserRouter([{
   path: "/",
@@ -94,6 +94,11 @@ const router = createBrowserRouter([{
         {
           path: "periodicExpenses/periodicExpenseForm",
           element: <PeriodicExpenseForm />
+        },
+        {
+          path: "periodicExpenses/periodicExpenseForm/:periodicExpenseId",
+          element: <PeriodicExpenseForm />,
+          loader: getPeriodicExpenseById,
         },
         {
           path: "dailyExpenses",
