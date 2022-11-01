@@ -27,7 +27,7 @@ const Unauthorized = () =>
     "You are not Authorized to login. Kindly connect with Administrator"
   );
 
-const LoginSuccess = () => toast.success("Logged in Successfully!");
+const LoginSuccess = () => toast.success("Login Successful!");
 
 const Login = () => {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ const Login = () => {
         <img src={LoginImage} alt="login_image" width={400} />
         <h4 className="mt-4 text-xl font-semibold">
           Let us help you, <br /> Manage your
-          <span className="font-bold text-sky-600">Expense</span>
+          <span className="font-bold text-sky-600"> Expense</span>
         </h4>
       </div>
       <div className="min-h-[410px] h-[410px] bg-slate-50 rounded-md p-5 shadow-md">

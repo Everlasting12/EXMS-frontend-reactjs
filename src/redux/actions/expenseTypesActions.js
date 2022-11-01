@@ -2,9 +2,9 @@ import axios from "axios"
 import * as actions from "./actionTypes"
 
 const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "api/expensetypes/"
-export const getAllExpenseTypesAction = () => (dispatch) =>
+export const getAllExpenseTypesAction = (searchText) => (dispatch) =>
 {
-    axios.get(apiEndpoint)
+    axios.get(apiEndpoint + `?name=${ searchText }`)
         .then(response => dispatch({ type: actions.GET_ALL_EXPSENSE_TYPES, payload: { expenseTypes: response.data.data } })
         )
         .catch(error => console.log(error))

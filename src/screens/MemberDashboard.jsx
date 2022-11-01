@@ -9,22 +9,26 @@ import {
   MdSearch,
   MdOutlineEdit,
   MdDeleteOutline,
+  MdSettings,
 } from "react-icons/md";
-import { HiWrenchScrewdriver } from "react-icons/hi2";
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import MenuItems from "../components/common/MenuItems";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getAllExpenseTypesAction } from "../redux/actions/expenseTypesActions";
+import {
+  getloggedInUserDetails,
+  logoutUser,
+} from "../redux/actions/loginAction";
 
 const memberMenus = [
   {
-    name: "Expense type",
-    to: "/expenseType",
+    name: "Periodic Expenses",
+    to: "/member/periodicExpenses",
   },
   {
-    name: "Users",
-    to: "/users",
+    name: "Daily Expenses",
+    to: "/member/dailyExpenses",
   },
 ];
 
@@ -34,12 +38,15 @@ const MemberDashboard = () => {
     (state) => state.expenseTypesReducer.expenseTypes
   );
 
+  const loggedInUser = useSelector((state) => state.loginReducer.user);
+
   useEffect(() => {
+    dispatch(getloggedInUserDetails());
     dispatch(getAllExpenseTypesAction());
   }, []);
 
-  const handleEdit = (expenseTypeId) => {};
-  const handleDelete = (expenseTypeId) => {};
+console.log(loggedInUser);  
+
 
   return (
     <div className="h-screen w-[94%] mx-auto flex">
@@ -58,7 +65,7 @@ const MemberDashboard = () => {
             </div>
             <div className="pt-10 pb-2 w-full flex flex-col">
               <span className="text-center text-white text-lg font-bold tracking-wider">
-                Hello Sidhesh
+                Hello {loggedInUser?.firstName}
               </span>
               <span className="text-center text-white text-sm font-[200]">
                 Welcome back
@@ -80,12 +87,15 @@ const MemberDashboard = () => {
               </span>
             </NavLink>
             <NavLink className="px-2 py-2  hover:bg-[#3c73cc] flex items-center">
-              <HiWrenchScrewdriver size={25} color="white" className="ml-2" />
+              <MdSettings size={25} color="white" className="ml-2" />
               <span className="ml-2 text-white text-xs font-[200]">
                 Settings
               </span>
             </NavLink>
-            <NavLink className="px-2 py-2  hover:bg-[#3c73cc] flex items-center">
+            <NavLink
+              className="px-2 py-2  hover:bg-[#3c73cc] flex items-center"
+              onClick={() => dispatch(logoutUser())}
+            >
               <MdLogout size={25} color="white" className="ml-2" />
               <span className="ml-2 text-white text-xs font-[200]">Logout</span>
             </NavLink>
@@ -101,69 +111,9 @@ const MemberDashboard = () => {
 
         {/*  */}
         <MenuItems menus={memberMenus} />
-        <div className="flex justify-between items-center my-3">
-          <div className="w-1/3 flex items-center shadow rounded-lg overflow-clip px-3">
-            <input
-              type="text"
-              name="search"
-              id="search"
-              placeholder="Search..."
-              className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
-            />
-            <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
-          </div>
-          <div>
-            <button className="w-9 h-9 bg-[#3F7BDA] text-white rounded-full text-3xl shadow-md">
-              +
-            </button>
-          </div>
-        </div>
-        {/* Expense Type Table */}
+        <Outlet />
 
-        <div className="overflow-x-auto relative mt-4">
-          <table className="w-full text-xs text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-sm  text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
-              <tr className="font-nunito">
-                <th scope="col" className="py-2 px-6 font-extralight">
-                  No.
-                </th>
-                <th scope="col" className="py-2 px-6 font-extralight">
-                  Expense Types
-                </th>
-                <th scope="col" className="py-2 px-6 font-extralight">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {expenseTypes.map((expenseType, index) => (
-                <tr
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  key={expenseType._id}
-                >
-                  <th
-                    scope="row"
-                    className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    {++index}. {expenseType.name}
-                  </th>
-                  <td className="py-2 px-6 flex ">
-                    <MdOutlineEdit
-                      size={20}
-                      className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100"
-                      onClick={() => handleEdit(expenseType._id)}
-                    />
-                    <MdDeleteOutline
-                      size={20}
-                      className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100 ml-2"
-                      onClick={() => handleDelete(expenseType._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import * as actions from "./actionTypes"
 
 const logoutSuccessful = () => toast.success("Logout Successful!")
+const loginFailed = () => toast.error("Invalid Email or Password!")
 
 const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "authentication"
 
@@ -17,6 +18,7 @@ export const loginAction = (data) => async (dispatch) =>
     }
     catch (error)
     {
+        loginFailed()
         console.log(error)
     }
 }

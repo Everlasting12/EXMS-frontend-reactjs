@@ -5,6 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllPeriodicExpenseAction } from "../redux/actions/periodicExpenseAction";
 
+const frequency = [
+  "Yesterday",
+  "Today",
+  "Last 7 days",
+  "Last month",
+  "Last 6 months",
+  "Last year",
+];
+
 const PeriodicPayments = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -30,8 +39,15 @@ const PeriodicPayments = () => {
           if (expenseType) {
             array.push({
               ...pe,
+              dueDate:
+                new Date(pe.dueDate).getDate() +
+                "/" +
+                (new Date(pe.dueDate).getMonth() + 1) +
+                "/" +
+                new Date(pe.dueDate).getFullYear(),
               expensetype: expenseType.name,
               expenseTypeId: expenseType._id,
+              householdName: h.name,
             });
           }
         }
@@ -55,6 +71,28 @@ const PeriodicPayments = () => {
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
+        </div>
+        <div className="w-56">
+          <label
+            htmlFor="frequency"
+            className="flex items-center justify-between  text-sm my-1"
+          >
+            Filter
+            <select
+              name="frequency"
+              id="frequency"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-pointer"
+            >
+              <option value="">Select Frequency</option>
+              {frequency.map((freq) => {
+                return (
+                  <option value={freq} key={freq}>
+                    {freq}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
         </div>
         <div>
           <Link
@@ -80,7 +118,13 @@ const PeriodicPayments = () => {
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 w-[30%] py-2 px-6 font-extralight"
+                  className="sticky top-0  py-2 px-6 font-extralight"
+                >
+                  Due Date
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0  py-2 px-6 font-extralight"
                 >
                   Expense Type
                 </th>
@@ -106,13 +150,19 @@ const PeriodicPayments = () => {
                 >
                   <td
                     scope="row"
-                    className="w-10 py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {++index}
                   </td>
                   <td
                     scope="row"
-                    className="w-10 py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {pe.dueDate}
+                  </td>
+                  <td
+                    scope="row"
+                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {pe.expensetype}
                   </td>
@@ -120,12 +170,22 @@ const PeriodicPayments = () => {
                     scope="row"
                     className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {pe.paidBy}
-                    {/* {pe.paidBy.map((name) => (
-                      <span className="block" key={name}>
-                        {name}
-                      </span>
-                    ))} */}
+                    {/* {pe.paidBy.map((name, index) => {
+                      if (pe.paidBy.length - 1 === index) {
+                        return (
+                          <span className="mr-1" key={index}>
+                            {name}
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <span className="mr-1" key={index}>
+                            {name},
+                          </span>
+                        );
+                      }
+                    })} */}
+                    {pe.householdName}
                   </td>
                   <td className="py-2 px-6 flex ">
                     <Link to={`periodicExpenseForm/${pe._id}`}>

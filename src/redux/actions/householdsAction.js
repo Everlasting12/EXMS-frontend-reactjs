@@ -10,7 +10,8 @@ const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "api/households/"
 
 export const getAllHouseholdForCurrentPrimaryUserAction = (primaryUserId) => (dispatch) =>
 {
-    axios.get(apiEndpoint + "?createdBy=" + primaryUserId)
+    // axios.get(apiEndpoint + "?createdBy=" + primaryUserId)
+    axios.get(apiEndpoint + `${ primaryUserId ? "?createdBy=" + primaryUserId : "" }`)
         .then(response => dispatch({ type: actions.GET_ALL_HOUSEHOLDS, payload: { households: response.data.data } })
         )
         .catch(error => console.log(error))

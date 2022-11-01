@@ -45,10 +45,9 @@ const PrimaryUserDashboard = () => {
   const loggedInUser = useSelector((state) => state.loginReducer.user);
 
   useEffect(() => {
-    dispatch(getAllExpenseTypesAction());
     dispatch(getloggedInUserDetails());
     dispatch(getAllMembersAction());
-    dispatch(getAllExpenseTypesAction());
+    dispatch(getAllExpenseTypesAction(""));
   }, []);
 
   useEffect(() => {

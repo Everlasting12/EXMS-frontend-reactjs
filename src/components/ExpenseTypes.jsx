@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux/es/hooks/useDispatch";
 import {
@@ -8,17 +8,22 @@ import {
 import TableData from "./common/TableData";
 import { MdSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
 const ExpenseTypes = () => {
+  const [searchText, setSearchText] = useState("");
+
   const dispatch = useDispatch();
   const expenseTypes = useSelector(
     (state) => state.expenseTypesReducer.expenseTypes
   );
 
   useEffect(() => {
-    dispatch(getAllExpenseTypesAction());
+    dispatch(getAllExpenseTypesAction(""));
   }, []);
+
+  useEffect(() => {
+    dispatch(getAllExpenseTypesAction(searchText));
+  }, [searchText]);
 
   const handleEdit = (expenseTypeId) => {
     console.log(expenseTypeId);
@@ -37,6 +42,10 @@ const ExpenseTypes = () => {
             id="search"
             placeholder="Search..."
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
+            onChange={(e) => {
+              setSearchText(e.target.value.trim());
+            }}
+            value={searchText}
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
         </div>

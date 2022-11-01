@@ -1,7 +1,7 @@
 import axios from "axios";
-import { GET_ALL_PERIODIC_EXPENSE } from "./actionTypes";
+import { CREATE_PERIODIC_EXPENSE, GET_ALL_PERIODIC_EXPENSE, GET_CURRENT_PERIODIC_EXPENSE, UPDATE_PERIODIC_EXPENSE } from "./actionTypes";
 
-const apiEndPoint = process.env.REACT_APP_API_URL_FEATHERS + "api/periodicpayments";
+const apiEndPoint = process.env.REACT_APP_API_URL_FEATHERS + "api/periodicpayments/";
 
 
 export const getAllPeriodicExpenseAction = () => (dispatch) =>
@@ -12,3 +12,32 @@ export const getAllPeriodicExpenseAction = () => (dispatch) =>
     })).catch(error => console.log(error))
 }
 
+export const getCurrentPeriodicExpenses = (periodicExpenseId) => dispatch =>
+{
+
+    axios.get(apiEndPoint + periodicExpenseId).then(response =>
+    {
+        dispatch({
+            type: GET_CURRENT_PERIODIC_EXPENSE,
+            payload: { currentPeriodicExpense: response.data }
+        })
+    }).catch(error => console.log(error))
+}
+
+export const addPeriodicExpenseAction = (data) => (dispatch, getState) =>
+{
+    axios.post(apiEndPoint, data, { headers: { "Authorization": getState().loginReducer.token } })
+        .then(response => dispatch({
+            type: CREATE_PERIODIC_EXPENSE,
+            payload: { periodicExpense: response.data }
+        }))
+}
+export const updatePeriodicExpenseAction = (data) => (dispatch, getState) =>
+{
+
+    axios.patch(apiEndPoint + data._id, data, { headers: { "Authorization": getState().loginReducer.token } })
+        .then(response => dispatch({
+            type: UPDATE_PERIODIC_EXPENSE,
+            payload: { periodicExpense: response.data }
+        }))
+}

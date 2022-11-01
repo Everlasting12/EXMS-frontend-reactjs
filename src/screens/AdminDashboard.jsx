@@ -37,7 +37,7 @@ const AdminDashboard = () => {
   const loggedInUser = useSelector((state) => state.loginReducer.user);
 
   useEffect(() => {
-    dispatch(getAllExpenseTypesAction());
+    dispatch(getAllExpenseTypesAction(""));
     dispatch(getloggedInUserDetails());
     dispatch(getAllUsersAction());
   }, []);
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
         </div>
         {/*  */}
         <MenuItems type="admin" menus={adminMenus} />
-        
+
         {/* Expense Type Table */}
         <Outlet />
       </div>
