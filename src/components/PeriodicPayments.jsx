@@ -89,7 +89,7 @@ const PeriodicPayments = () => {
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
         </div>
-        <div className="w-56">
+        <div className="w-48">
           <label
             htmlFor="frequency"
             className="flex items-center justify-between  text-sm my-1"
@@ -98,7 +98,7 @@ const PeriodicPayments = () => {
             <select
               name="frequency"
               id="frequency"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-pointer"
+              className="bg-gray-50 border-2 border-gray-300 text-gray-900  rounded outline-none focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-[2px] text-xs cursor-pointer"
             >
               <option value="">Select Frequency</option>
               {frequency.map((freq) => {

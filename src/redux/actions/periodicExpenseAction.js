@@ -1,5 +1,10 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 import { CREATE_PERIODIC_EXPENSE, GET_ALL_PERIODIC_EXPENSE, GET_CURRENT_PERIODIC_EXPENSE, UPDATE_PERIODIC_EXPENSE } from "./actionTypes";
+
+const periodicExpenseUpdated = (msg) => toast.success(msg, {
+    theme: "light",
+})
 
 const apiEndPoint = process.env.REACT_APP_API_URL_FEATHERS + "api/periodicpayments/";
 
@@ -36,8 +41,12 @@ export const updatePeriodicExpenseAction = (data) => (dispatch, getState) =>
 {
 
     axios.patch(apiEndPoint + data._id, data, { headers: { "Authorization": getState().loginReducer.token } })
-        .then(response => dispatch({
-            type: UPDATE_PERIODIC_EXPENSE,
-            payload: { periodicExpense: response.data }
-        }))
+        .then(response =>
+        {
+            periodicExpenseUpdated(`${ response.data.description } is updated successfully`)
+            dispatch({
+                type: UPDATE_PERIODIC_EXPENSE,
+                payload: { periodicExpense: response.data }
+            })
+        })
 }

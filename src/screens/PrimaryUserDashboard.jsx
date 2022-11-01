@@ -116,7 +116,7 @@ const PrimaryUserDashboard = () => {
       {/* right side */}
       <div className="h-full w-full px-8 pb-5" style={{ flex: "9" }}>
         <div className="h-[70px] flex items-center">
-          <span className="text-xl">Dashboard</span>
+          <span className="text-xl"> Primary User Dashboard</span>
         </div>
         {/*  */}
         <MenuItems menus={primaryUserMenus} />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteUserAction,
@@ -7,14 +7,19 @@ import {
 import TableData from "./common/TableData";
 import { MdSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
 const Users = () => {
   const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState("");
+
   const users = useSelector((state) => state.usersReducer.users);
   useEffect(() => {
-    dispatch(getAllUsersAction());
+    dispatch(getAllUsersAction(""));
   }, []);
+  useEffect(() => {
+    dispatch(getAllUsersAction(searchText));
+  }, [searchText]);
+
   const handleEdit = (userId) => {
     console.log(userId);
   };
@@ -31,6 +36,10 @@ const Users = () => {
             id="search"
             placeholder="Search..."
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
+            onChange={(e) => {
+              setSearchText(e.target.value.trim());
+            }}
+            // value={searchText}
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
         </div>

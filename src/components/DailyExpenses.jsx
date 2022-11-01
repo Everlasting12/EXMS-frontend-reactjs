@@ -10,10 +10,13 @@ const DailyExpenses = () => {
   const dailyExpenses = useSelector(
     (state) => state.dailyExpenseReducer.dailyExpenses
   );
+  const members = useSelector((state) => state.membersReducer.members);
+
   const households = useSelector((state) => state.householdReducer.households);
   const expenseTypes = useSelector(
     (state) => state.expenseTypesReducer.expenseTypes
   );
+  const loggedInUser = useSelector((state) => state.loginReducer.user);
 
   useEffect(() => {
     dispatch(getAllDailyExpenses());
@@ -22,21 +25,42 @@ const DailyExpenses = () => {
   function getHouseholdDailyExpenses() {
     let array = [];
     let Atotal = 0;
-    households.forEach((household) => {
-      dailyExpenses.forEach((dailyExp) => {
-        if (household._id === dailyExp.household) {
-          const expenseType = expenseTypes.find(
-            (exptype) => exptype._id === dailyExp.expensetype
-          );
-          array.push({
-            ...dailyExp,
-            householdName: household.name,
-            expenseTypeName: expenseType?.name,
+    if (loggedInUser.role === "primary user") {
+      households.forEach((household) => {
+        dailyExpenses.forEach((dailyExp) => {
+          if (household._id === dailyExp.household) {
+            const expenseType = expenseTypes.find(
+              (exptype) => exptype._id === dailyExp.expensetype
+            );
+            array.push({
+              ...dailyExp,
+              householdName: household.name,
+              expenseTypeName: expenseType?.name,
+            });
+            Atotal += dailyExp.paymentDetails.amount;
+          }
+        });
+      });
+    } else if (loggedInUser.role === "member") {
+      members.forEach((m) => {
+        if (m.user === loggedInUser._id) {
+          dailyExpenses.forEach((de) => {
+            if (de.household === m.household) {
+              const expenseType = expenseTypes.find(
+                (exptype) => exptype._id === de.expensetype
+              );
+              const household = households.find((h) => h._id === m.household);
+              array.push({
+                ...de,
+                householdName: household.name,
+                expenseTypeName: expenseType?.name,
+              });
+              Atotal += de.paymentDetails.amount;
+            }
           });
-          Atotal += dailyExp.paymentDetails.amount;
         }
       });
-    });
+    }
 
     return { array, total: Atotal };
   }

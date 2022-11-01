@@ -83,7 +83,6 @@ const PeriodicExpenseForm = () => {
   const handlePeriodicExpenseForm = (data) => {
     // console.log(data);
     if (data._id) {
-      console.log({ data });
       const peData = {
         // ...data,
         dueDate: data.duedate,

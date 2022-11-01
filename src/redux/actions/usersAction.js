@@ -2,9 +2,9 @@ import axios from "axios"
 import * as actions from "./actionTypes"
 
 const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "users/"
-export const getAllUsersAction = () => (dispatch) =>
+export const getAllUsersAction = (searchText) => (dispatch) =>
 {
-    axios.get(apiEndpoint)
+    axios.get(apiEndpoint + `?fullname=${ searchText }`)
         .then(response => dispatch({ type: actions.GET_ALL_USERS, payload: { users: response.data.data } })
         )
         .catch(error => console.log(error))

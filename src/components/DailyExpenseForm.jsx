@@ -39,9 +39,12 @@ const schema = yup.object().shape({
   paidBy: yup.string().required("Please enter your name").min(3).max(50),
 });
 
+let householdArray = [];
 const DailyExpenseForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const loggedInUser = useSelector((state) => state.loginReducer.user);
+  const members = useSelector((state) => state.membersReducer.members);
 
   const households = useSelector((state) => state.householdReducer.households);
   const expenseTypes = useSelector(
@@ -54,10 +57,28 @@ const DailyExpenseForm = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  function getHousehold() {
+    if (loggedInUser.role === "primary user") {
+      return households;
+    }
+    if (loggedInUser.role === "member") {
+      const array = [];
+      members.forEach((m) => {
+        if (m.user === loggedInUser._id) {
+          const house = households.find((h) => h._id === m.household);
+          array.push(house);
+        }
+      });
+      return array;
+    }
+  }
+
   const handleDailyExpenseForm = (data) => {
-    console.log(data);
+    // console.log(data);
     dispatch(addDailyExpenses(data));
-    navigate("/primaryuser/dailyExpenses");
+    loggedInUser.role === "primary user"
+      ? navigate("/primaryuser/dailyExpenses")
+      : navigate("/member/dailyExpenses");
   };
   return (
     <div className="h-[90%] my-5 w-[80%] mx-auto px-1 paperWindow">
@@ -81,10 +102,10 @@ const DailyExpenseForm = () => {
               {...register("householdId")}
             >
               <option value="">Select Household</option>
-              {households.map((house) => {
+              {getHousehold().map((house) => {
                 return (
-                  <option value={house._id} key={house._id}>
-                    {house.name}
+                  <option value={house?._id} key={house?._id}>
+                    {house?.name}
                   </option>
                 );
               })}

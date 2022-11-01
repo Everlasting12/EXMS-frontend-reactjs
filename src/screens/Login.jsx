@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 
 import jwt_decode from "jwt-decode";
 import { useEffect } from "react";
+import { LOGOUT_USER } from "../redux/actions/actionTypes";
 
 const schema = yup
   .object()
@@ -39,7 +40,9 @@ const Login = () => {
 
       if (!decode.isActive) {
         Unauthorized();
-        dispatch(logoutUser());
+        sessionStorage.setItem("token", "");
+        dispatch({ type: LOGOUT_USER });
+        // dispatch(logoutUser());
         navigate("/");
         return;
       }
