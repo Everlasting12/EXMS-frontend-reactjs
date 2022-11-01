@@ -123,6 +123,11 @@ const router = createBrowserRouter([{
           // element: <PeriodicExpenseMember />
           element: <PeriodicPayments />
         },
+        {
+          path: "periodicExpenses/periodicExpenseForm/:periodicExpenseId",
+          element: <PeriodicExpenseForm />,
+          loader: getPeriodicExpenseById,
+        }
       ]
 
     },

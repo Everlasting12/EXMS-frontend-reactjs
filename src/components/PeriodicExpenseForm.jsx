@@ -106,7 +106,10 @@ const PeriodicExpenseForm = () => {
 
       dispatch(addPeriodicExpenseAction(peData));
     }
-    navigate("/primaryuser/periodicExpenses");
+    if (loggedInUser.role === "primary user")
+      navigate("/primaryuser/periodicExpenses");
+    else if (loggedInUser.role === "member")
+      navigate("/member/periodicExpenses");
   };
 
   return (

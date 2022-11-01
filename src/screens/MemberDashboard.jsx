@@ -20,6 +20,8 @@ import {
   getloggedInUserDetails,
   logoutUser,
 } from "../redux/actions/loginAction";
+import { getAllMembersAction } from "../redux/actions/membersAction";
+import { getAllHouseholdForCurrentPrimaryUserAction } from "../redux/actions/householdsAction";
 
 const memberMenus = [
   {
@@ -34,19 +36,15 @@ const memberMenus = [
 
 const MemberDashboard = () => {
   const dispatch = useDispatch();
-  const expenseTypes = useSelector(
-    (state) => state.expenseTypesReducer.expenseTypes
-  );
 
   const loggedInUser = useSelector((state) => state.loginReducer.user);
 
   useEffect(() => {
     dispatch(getloggedInUserDetails());
-    dispatch(getAllExpenseTypesAction());
+    dispatch(getAllExpenseTypesAction(""));
+    dispatch(getAllMembersAction());
+    dispatch(getAllHouseholdForCurrentPrimaryUserAction());
   }, []);
-
-console.log(loggedInUser);  
-
 
   return (
     <div className="h-screen w-[94%] mx-auto flex">
@@ -112,8 +110,6 @@ console.log(loggedInUser);
         {/*  */}
         <MenuItems menus={memberMenus} />
         <Outlet />
-
-        
       </div>
     </div>
   );

@@ -18,8 +18,6 @@ export const membersReducer = (state = { members: [], currentMember: null }, act
         case GET_CURRENT_MEMBER:
             return { ...state, currentMember: action.payload.currentMember }
 
-
-
         default:
             return state;
     }

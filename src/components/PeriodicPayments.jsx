@@ -16,6 +16,9 @@ const frequency = [
 
 const PeriodicPayments = () => {
   const dispatch = useDispatch();
+  const loggedInUser = useSelector((state) => state.loginReducer.user);
+  const members = useSelector((state) => state.membersReducer.members);
+
   useEffect(() => {
     dispatch(getAllPeriodicExpenseAction());
   }, []);
@@ -30,35 +33,49 @@ const PeriodicPayments = () => {
 
   function getPeriodicExpensesPerHouseholds() {
     let array = [];
-    households.forEach((h, index) => {
-      periodicExpenses.forEach((pe, index) => {
-        if (pe.household === h._id) {
-          const expenseType = expenseTypes.find(
-            (et) => et._id === pe.expensetype
-          );
-          if (expenseType) {
-            array.push({
-              ...pe,
-              dueDate:
-                new Date(pe.dueDate).getDate() +
-                "/" +
-                (new Date(pe.dueDate).getMonth() + 1) +
-                "/" +
-                new Date(pe.dueDate).getFullYear(),
-              expensetype: expenseType.name,
-              expenseTypeId: expenseType._id,
-              householdName: h.name,
-            });
+    if (loggedInUser.role === "primary user") {
+      households.forEach((h, index) => {
+        periodicExpenses.forEach((pe, index) => {
+          if (pe.household === h._id) {
+            const expenseType = expenseTypes.find(
+              (et) => et._id === pe.expensetype
+            );
+            if (expenseType) {
+              array.push({
+                ...pe,
+                expensetype: expenseType.name,
+                expenseTypeId: expenseType._id,
+                householdName: h.name,
+              });
+            }
           }
+        });
+      });
+    } else if (loggedInUser.role === "member") {
+      // array.push({ householdName: "Sid", _id: "dfghjk" });
+
+      members.forEach((m) => {
+        if (m.user === loggedInUser._id) {
+          periodicExpenses.forEach((pe, index) => {
+            if (m.household === pe.household) {
+              const household = households.find((h) => h._id === pe.household);
+              const expenseType = expenseTypes.find(
+                (et) => et._id === pe.expensetype
+              );
+              array.push({
+                ...pe,
+                householdName: household.name,
+                expensetype: expenseType.name,
+              });
+            }
+          });
         }
       });
-    });
+    }
     return array;
   }
 
-  const handleDelete = (periodicExpenseId) => {
-    console.log(periodicExpenseId);
-  };
+
   return (
     <>
       <div className="flex justify-between items-center my-3">
@@ -95,12 +112,16 @@ const PeriodicPayments = () => {
           </label>
         </div>
         <div>
-          <Link
-            className="px-2 py-0 bg-[#3F7BDA] text-white rounded-full text-2xl shadow-md"
-            to="periodicExpenseForm"
-          >
-            +
-          </Link>
+          {loggedInUser.role === "primary user" ? (
+            <Link
+              className="px-2 py-0 bg-[#3F7BDA] text-white rounded-full text-2xl shadow-md"
+              to="periodicExpenseForm"
+            >
+              +
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       {getPeriodicExpensesPerHouseholds().length === 0 ? (
@@ -158,7 +179,11 @@ const PeriodicPayments = () => {
                     scope="row"
                     className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {pe.dueDate}
+                    {new Date(pe.dueDate).getDate() +
+                      "/" +
+                      (new Date(pe.dueDate).getMonth() + 1) +
+                      "/" +
+                      new Date(pe.dueDate).getFullYear()}
                   </td>
                   <td
                     scope="row"
@@ -195,11 +220,11 @@ const PeriodicPayments = () => {
                       />
                     </Link>
 
-                    <MdDeleteOutline
+                    {/* <MdDeleteOutline
                       size={20}
                       className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100 ml-2"
                       onClick={() => handleDelete(pe._id)}
-                    />
+                    /> */}
                   </td>
                 </tr>
               ))}
