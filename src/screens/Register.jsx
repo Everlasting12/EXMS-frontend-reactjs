@@ -195,11 +195,6 @@ const Register = () => {
             </button>
           </div>
         </form>
-        <div className="text-end text-sm mt-1">
-          <a href="#" className="px-2 py-1 text-sky-500 rounded">
-            forget password?
-          </a>
-        </div>
       </div>
     </div>
   );

@@ -4,9 +4,12 @@ import { MdOutlineEdit, MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
 const TableData = ({ name, data, onEdit, onDelete, textProp, link }) => {
   return (
-    <div className="h-[calc(100vh-150px)] w-full overflow-auto mt-4 ">
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
+    <div className="h-[calc(100%-160px)] w-full overflow-y-auto mt-4 paperWindow">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
+        <thead
+          className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400"
+          style={{ zIndex: "1" }}
+        >
           <tr className="sticky top-0 font-nunito">
             <th
               scope="col"
@@ -28,17 +31,27 @@ const TableData = ({ name, data, onEdit, onDelete, textProp, link }) => {
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
               key={d._id}
             >
-              <td
-                scope="row"
-                className="w-10 py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
+              <td className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {++index}.
               </td>
-              <td
-                scope="row"
-                className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                {d[textProp]} {d.lastName}
+              <td className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <span className="flex">
+                  {name === "Users" ? (
+                    <span
+                      style={{ zIndex: "0" }}
+                      className={`text-[2.5rem] mr-2 p-0 m-0 ${
+                        d.isActive
+                          ? "text-green-600 animate-pulse"
+                          : "text-red-400"
+                      } `}
+                    >
+                      &#8226;
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {d[textProp]} {d.lastName}
+                </span>
               </td>
               <td className="py-2 px-6 flex ">
                 <Link to={`${link}${d._id}`}>

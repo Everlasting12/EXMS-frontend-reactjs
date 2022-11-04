@@ -168,7 +168,7 @@ const UserForm = () => {
               htmlFor="isActive"
               className="ml-2 w-fit text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
             >
-              Soft Delete User
+              Is Active
             </label>
           </div>
         </div>

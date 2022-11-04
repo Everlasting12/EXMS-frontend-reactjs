@@ -1,27 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
-import { MdDeleteOutline, MdOutlineEdit, MdSearch } from "react-icons/md";
+import { MdOutlineEdit, MdSearch } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAllHouseholdForCurrentPrimaryUserAction } from "../redux/actions/householdsAction";
 import { getAllPeriodicExpenseAction } from "../redux/actions/periodicExpenseAction";
 
 const frequency = [
-  "Yesterday",
-  "Today",
-  "Last 7 days",
-  "Last month",
-  "Last 6 months",
-  "Last year",
+  { title: "Yesterday", date: 1 * 86400000 },
+  { title: "Today", date: 0 },
+  { title: "Last 7 days", date: 7 * 86400000 },
+  { title: "Last month", date: 31 * 86400000 },
+  { title: "Last 6 months", date: 183 * 86400000 },
+  { title: "Last year", date: 365 * 86400000 },
 ];
 
 const PeriodicPayments = () => {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.loginReducer.user);
   const members = useSelector((state) => state.membersReducer.members);
+  const [searchText, setSearchText] = useState("");
+  const [filter, setFilter] = useState("");
+  const [role, setRole] = useState(loggedInUser.role);
 
   useEffect(() => {
     dispatch(getAllPeriodicExpenseAction());
   }, []);
+  useEffect(() => {
+    getPeriodicExpensesPerHouseholds();
+  }, [searchText]);
+  useEffect(() => {
+    getPeriodicExpensesPerHouseholds();
+  }, [filter]);
+  useEffect(() => {
+    role === "member"
+      ? dispatch(getAllHouseholdForCurrentPrimaryUserAction("", ""))
+      : dispatch(
+          getAllHouseholdForCurrentPrimaryUserAction(loggedInUser._id, "")
+        );
+  }, [role]);
 
   const periodicExpenses = useSelector(
     (state) => state.periodicExpenseReducer.periodicExpenses
@@ -30,10 +47,10 @@ const PeriodicPayments = () => {
   const expenseTypes = useSelector(
     (state) => state.expenseTypesReducer.expenseTypes
   );
-
   function getPeriodicExpensesPerHouseholds() {
     let array = [];
-    if (loggedInUser.role === "primary user") {
+
+    if (role === "primary user") {
       households.forEach((h, index) => {
         periodicExpenses.forEach((pe, index) => {
           if (pe.household === h._id) {
@@ -51,20 +68,18 @@ const PeriodicPayments = () => {
           }
         });
       });
-    } else if (loggedInUser.role === "member") {
-      // array.push({ householdName: "Sid", _id: "dfghjk" });
-
+    } else if (role === "member") {
       members.forEach((m) => {
         if (m.user === loggedInUser._id) {
           periodicExpenses.forEach((pe, index) => {
             if (m.household === pe.household) {
-              const household = households.find((h) => h._id === pe.household);
+              const household = households.find((h) => h._id == pe.household);
               const expenseType = expenseTypes.find(
                 (et) => et._id === pe.expensetype
               );
               array.push({
                 ...pe,
-                householdName: household.name,
+                householdName: household?.name,
                 expensetype: expenseType.name,
               });
             }
@@ -72,9 +87,65 @@ const PeriodicPayments = () => {
         }
       });
     }
+
+    if (searchText) {
+      let f = [];
+      array.forEach((a) => {
+        const regexp = new RegExp(`${searchText}`, "ig");
+        if (
+          a.expensetype.match(regexp) ||
+          a.householdName.match(regexp) ||
+          a.description.match(regexp)
+        ) {
+          f.push(a);
+        }
+      });
+      array = [...f];
+    }
+    if (filter) {
+      let f = [];
+
+      array.forEach((a) => {
+        switch (filter.split("|")[0]) {
+          case "Today":
+            if (
+              filter.split("|")[1].split("T")[0] ==
+              a.paymentDetails[0]?.date.split("T")[0]
+            ) {
+              f.push(a);
+            }
+            break;
+          case "Yesterday":
+            if (
+              filter.split("|")[1].split("T")[0] ==
+              a.paymentDetails[0]?.date.split("T")[0]
+            ) {
+              f.push(a);
+            }
+            break;
+
+          case "Last 7 days":
+            if (filter.split("|")[1] <= a.paymentDetails[0]?.date) f.push(a);
+            break;
+          case "Last month":
+            if (filter.split("|")[1] <= a.paymentDetails[0]?.date) f.push(a);
+            break;
+          case "Last 6 months":
+            if (filter.split("|")[1] <= a.paymentDetails[0]?.date) f.push(a);
+            break;
+          case "Last year":
+            if (filter.split("|")[1] <= a.paymentDetails[0]?.date) f.push(a);
+            break;
+          default:
+            f.push(a);
+            break;
+        }
+      });
+      array = [...f];
+    }
+
     return array;
   }
-
 
   return (
     <>
@@ -86,8 +157,32 @@ const PeriodicPayments = () => {
             id="search"
             placeholder="Search..."
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
+            onChange={(e) => {
+              setSearchText(e.target.value.trim());
+            }}
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
+        </div>
+        <div className="w-56">
+          {loggedInUser.role === "primary user" ? (
+            <label
+              htmlFor="role"
+              className="flex items-center justify-between  text-sm my-1"
+            >
+              Select Role:
+              <select
+                name="role"
+                id="role"
+                onChange={(e) => setRole(e.target.value)}
+                className="bg-gray-50 border-2 border-gray-300 text-gray-900  rounded outline-none focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-[2px] text-xs cursor-pointer"
+              >
+                <option value="primary user">Primary User</option>
+                <option value="member">Member</option>
+              </select>
+            </label>
+          ) : (
+            ""
+          )}
         </div>
         <div className="w-48">
           <label
@@ -99,12 +194,23 @@ const PeriodicPayments = () => {
               name="frequency"
               id="frequency"
               className="bg-gray-50 border-2 border-gray-300 text-gray-900  rounded outline-none focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-[2px] text-xs cursor-pointer"
+              onChange={(e) => {
+                setFilter(e.target.value);
+              }}
             >
-              <option value="">Select Frequency</option>
+              <option value="">All Expenses</option>
               {frequency.map((freq) => {
                 return (
-                  <option value={freq} key={freq}>
-                    {freq}
+                  <option
+                    // value={new Date(Date.now() - freq.date).toISOString()}
+                    value={
+                      freq.title +
+                      "|" +
+                      new Date(Date.now() - freq.date).toISOString()
+                    }
+                    key={freq.title}
+                  >
+                    {freq.title}
                   </option>
                 );
               })}
@@ -112,7 +218,7 @@ const PeriodicPayments = () => {
           </label>
         </div>
         <div>
-          {loggedInUser.role === "primary user" ? (
+          {role === "primary user" ? (
             <Link
               className="px-2 py-0 bg-[#3F7BDA] text-white rounded-full text-2xl shadow-md"
               to="periodicExpenseForm"
@@ -125,10 +231,12 @@ const PeriodicPayments = () => {
         </div>
       </div>
       {getPeriodicExpensesPerHouseholds().length === 0 ? (
-        <span>No Periodic Expenses in Database</span>
+        <span className="text-lg text-center block">
+          No <b>Periodic Expenses</b> in the Database...
+        </span>
       ) : (
-        <div className="h-[calc(100vh-150px)] w-full overflow-auto mt-4 ">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <div className="h-[calc(100%-150px)] w-full overflow-auto mt-4 ">
+          <table className="w-full  text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
               <tr className="sticky top-0 font-nunito">
                 <th
@@ -151,9 +259,15 @@ const PeriodicPayments = () => {
                 </th>
                 <th
                   scope="col"
+                  className="sticky top-0 w-custom py-2 px-6 font-extralight"
+                >
+                  Description
+                </th>
+                <th
+                  scope="col"
                   className="sticky top-0 py-2 px-6 font-extralight"
                 >
-                  Paid By
+                  Household
                 </th>
                 <th
                   scope="col"
@@ -169,32 +283,23 @@ const PeriodicPayments = () => {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                   key={pe._id}
                 >
-                  <td
-                    scope="row"
-                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
+                  <td className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {++index}
                   </td>
-                  <td
-                    scope="row"
-                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
+                  <td className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {new Date(pe.dueDate).getDate() +
                       "/" +
                       (new Date(pe.dueDate).getMonth() + 1) +
                       "/" +
                       new Date(pe.dueDate).getFullYear()}
                   </td>
-                  <td
-                    scope="row"
-                    className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
+                  <td className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {pe.expensetype}
                   </td>
-                  <td
-                    scope="row"
-                    className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
+                  <td className="py-2 px-6 break-words font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {pe.description}
+                  </td>
+                  <td className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {/* {pe.paidBy.map((name, index) => {
                       if (pe.paidBy.length - 1 === index) {
                         return (

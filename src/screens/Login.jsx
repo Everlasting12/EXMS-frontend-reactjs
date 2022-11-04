@@ -7,8 +7,8 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-import { loginAction, logoutUser } from "../redux/actions/loginAction";
-import { useNavigate } from "react-router-dom";
+import { loginAction } from "../redux/actions/loginAction";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import jwt_decode from "jwt-decode";
@@ -126,12 +126,12 @@ const Login = () => {
           </div>
         </form>
         <div className="text-end">
-          <a
-            href="#"
+          <Link
+            to="/forgetpassword"
             className="px-2 py-1 text-sky-500 hover:bg-slate-100 rounded"
           >
             forget password?
-          </a>
+          </Link>
         </div>
       </div>
     </div>

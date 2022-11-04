@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux/es/hooks/useDispatch";
 import TableData from "./common/TableData";
@@ -11,12 +11,20 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 const Household = () => {
   const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState("");
+
   const households = useSelector((state) => state.householdReducer.households);
   const loggedInUser = useSelector((state) => state.loginReducer.user);
 
   useEffect(() => {
     dispatch(getAllHouseholdForCurrentPrimaryUserAction(loggedInUser._id));
   }, []);
+
+  useEffect(() => {
+    dispatch(
+      getAllHouseholdForCurrentPrimaryUserAction(loggedInUser._id, searchText)
+    );
+  }, [searchText]);
 
   const handleDelete = (householdId) => {
     dispatch(deleteHouseholdAction(householdId));
@@ -32,6 +40,9 @@ const Household = () => {
             id="search"
             placeholder="Search..."
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
+            onChange={(e) => {
+              setSearchText(e.target.value.trim());
+            }}
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
         </div>

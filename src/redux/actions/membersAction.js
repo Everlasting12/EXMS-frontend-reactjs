@@ -1,6 +1,10 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 import { CREATE_MEMBER, DELETE_MEMBER, GET_ALL_MEMBERS, GET_CURRENT_MEMBER } from "./actionTypes";
 const apiEndPoint = process.env.REACT_APP_API_URL_FEATHERS + "api/householdmembers/"
+
+const memberAddedSuccess = (msg) => toast.success(msg, { theme: "light" })
+const memberAddingFailed = (msg) => toast.error(msg, { theme: "light" })
 
 export const getAllMembersAction = () => dispatch =>
 {
@@ -18,10 +22,20 @@ export const addMemberAction = (data) => (dispatch, getState) =>
         headers: {
             "Authorization": getState().loginReducer.token
         }
-    }).then(response => dispatch({
-        type: CREATE_MEMBER,
-        payload: { member: response.data }
-    })).catch(error => console.log(error))
+    }).then(response =>
+    {
+        memberAddedSuccess("Member added successfully")
+
+        dispatch({
+            type: CREATE_MEMBER,
+            payload: { member: response.data }
+        })
+
+    }).catch(error =>
+    {
+        console.log(error)
+        memberAddingFailed(error.response.data.message)
+    })
 }
 
 

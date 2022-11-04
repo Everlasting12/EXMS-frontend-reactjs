@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -8,13 +8,17 @@ import { deleteMemberAction } from "../redux/actions/membersAction";
 
 const Member = () => {
   const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState("");
   const users = useSelector((state) => state.usersReducer.users);
   const members = useSelector((state) => state.membersReducer.members);
   const households = useSelector((state) => state.householdReducer.households);
 
   useEffect(() => {
-    dispatch(getAllUsersAction());
+    dispatch(getAllUsersAction(""));
   }, []);
+  useEffect(() => {
+    getCurrentMembers();
+  }, [searchText]);
 
   function getCurrentMembers() {
     let array = [];
@@ -33,6 +37,16 @@ const Member = () => {
         }
       });
     });
+    if (searchText) {
+      const f = array.filter((a) => {
+        const regexp = new RegExp(`${searchText}`, "ig");
+        if (a.fullname.match(regexp) || a.householdName.match(regexp)) {
+          return a;
+        }
+      });
+      array = [...f];
+    }
+
     return array;
   }
 
@@ -50,6 +64,9 @@ const Member = () => {
             id="search"
             placeholder="Search..."
             className="px-2 py-2 outline-none text-sm placeholder:text-xs placeholder:text-slate-700 w-full"
+            onChange={(e) => {
+              setSearchText(e.target.value.trim());
+            }}
           />
           <MdSearch className="cursor-pointer rounded-full text-[#3F7BDA] text-xl" />
         </div>
@@ -63,11 +80,11 @@ const Member = () => {
         </div>
       </div>
       {getCurrentMembers().length === 0 ? (
-        <span className="text-lg block text-center">
-          No Members in the Database...
+        <span className="text-lg text-center block">
+          No <b>Members</b> in the Database...
         </span>
       ) : (
-        <div className="h-[calc(100vh-150px)] w-full overflow-auto mt-4 ">
+        <div className="h-[calc(100%-150px)] w-full overflow-auto mt-4 ">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
               <tr className="sticky top-0 font-nunito">
@@ -102,7 +119,7 @@ const Member = () => {
                 return (
                   <tr
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                    key={d._id}
+                    key={d?._id}
                   >
                     <td
                       scope="row"
@@ -114,16 +131,16 @@ const Member = () => {
                       scope="row"
                       className="w-10 py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      {d.fullname}
+                      {d?.fullname}
                     </td>
                     <td
                       scope="row"
                       className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      {d.householdName}
+                      {d?.householdName}
                     </td>
                     <td className="py-2 px-6 flex ">
-                      <Link to={`memberForm/${d._id}`}>
+                      <Link to={`memberForm/${d?._id}`}>
                         <MdOutlineEdit
                           size={20}
                           className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100"
@@ -133,7 +150,7 @@ const Member = () => {
                       <MdDeleteOutline
                         size={20}
                         className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100 ml-2"
-                        onClick={() => handleDelete(d._id)}
+                        onClick={() => handleDelete(d?._id)}
                       />
                     </td>
                   </tr>

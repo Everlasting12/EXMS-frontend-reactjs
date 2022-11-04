@@ -48,11 +48,18 @@ const MemberDashboard = () => {
 
   return (
     <div className="h-screen w-[94%] mx-auto flex">
-      <div className="h-full bg-slate-50" style={{ flex: "2" }}>
+      <div
+        className="h-full bg-slate-50"
+        style={{
+          flex: "2",
+          background:
+            "linear-gradient(to bottom, #F9F9F9 20%, #3F7BDA 20% 100%)",
+        }}
+      >
         <div className="py-1 bg-slate-50">
           <img src={emsLogo} width="155px" alt="ems-logo" className="ml-2" />
         </div>
-        <div className="w-full h-full bg-[#3F7BDA] pt-14 rounded-t-md">
+        <div className="w-full bg-[#3F7BDA] pt-14 rounded-t-md">
           <div className=" bg-[#65D173] w-full  relative">
             <div className="w-16 h-16 overflow-clip rounded-full absolute top-[-30px] left-[50%] -translate-x-1/2">
               <img
@@ -72,7 +79,10 @@ const MemberDashboard = () => {
           </div>
 
           <div className="mt-3 tracking-wider	">
-            <NavLink className="px-2 py-2  hover:bg-[#3c73cc] flex items-center">
+            <NavLink
+              className="px-2 py-2  hover:bg-[#3c73cc] flex items-center"
+              to="/member"
+            >
               <MdDashboard size={25} color="white" className="ml-2" />
               <span className="ml-2 text-white text-xs font-[200]">
                 Dashboard

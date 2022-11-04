@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { addDailyExpenses } from "../redux/actions/dailyExpensesAction";
+import { getAllHouseholdForCurrentPrimaryUserAction } from "../redux/actions/householdsAction";
 
 const schema = yup.object().shape({
   householdId: yup.string().required("Please select household"),
@@ -50,16 +51,37 @@ const DailyExpenseForm = () => {
   const expenseTypes = useSelector(
     (state) => state.expenseTypesReducer.expenseTypes
   );
-
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  useEffect(() => {
+    dispatch(getAllHouseholdForCurrentPrimaryUserAction("", ""));
+  }, []);
+
   function getHousehold() {
     if (loggedInUser.role === "primary user") {
-      return households;
+      // return households;
+      const array = [];
+      members.forEach((m) => {
+        if (m.user === loggedInUser._id) {
+          let house = [];
+          households.forEach((h) => {
+            if (h.createdBy === loggedInUser._id) {
+              house.push(h);
+            }
+            if (m.household === h._id) {
+              house.push(h);
+            }
+          });
+
+          array.push(...house);
+        }
+      });
+      return array;
     }
     if (loggedInUser.role === "member") {
       const array = [];

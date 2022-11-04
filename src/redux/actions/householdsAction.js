@@ -8,14 +8,23 @@ const householdUpdateError = (msg) => toast.error("Error in houshold " + msg, { 
 
 const apiEndpoint = process.env.REACT_APP_API_URL_FEATHERS + "api/households/"
 
-export const getAllHouseholdForCurrentPrimaryUserAction = (primaryUserId) => (dispatch) =>
+export const getAllHouseholdForCurrentPrimaryUserAction = (primaryUserId, searchText) => (dispatch) =>
 {
     // axios.get(apiEndpoint + "?createdBy=" + primaryUserId)
-    axios.get(apiEndpoint + `${ primaryUserId ? "?createdBy=" + primaryUserId : "" }`)
+    axios.get(apiEndpoint + `${ primaryUserId ? "?createdBy=" + primaryUserId : "" }` + `${ searchText ? "&name=" + searchText : "" }`)
         .then(response => dispatch({ type: actions.GET_ALL_HOUSEHOLDS, payload: { households: response.data.data } })
         )
         .catch(error => console.log(error))
 }
+
+// export const getAllHouseholdsAction = () => (dispatch) =>
+// {
+//     // axios.get(apiEndpoint + "?createdBy=" + primaryUserId)
+//     axios.get(apiEndpoint)
+//         .then(response => dispatch({ type: actions.GET_ALL_HOUSEHOLDS_FOR_MEMBER, payload: { households: response.data.data } })
+//         )
+//         .catch(error => console.log(error))
+// }
 
 export const deleteHouseholdAction = (householdId) => (dispatch, getState) =>
 {

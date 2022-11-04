@@ -28,6 +28,8 @@ import PeriodicPayments from "./components/PeriodicPayments";
 import PeriodicExpenseForm, { getPeriodicExpenseById } from "./components/PeriodicExpenseForm";
 import DailyExpenses from "./components/DailyExpenses";
 import DailyExpenseForm from "./components/DailyExpenseForm";
+import ForgetPassword from "./screens/ForgetPassword";
+import ResetPassword, { getResetToken } from "./screens/ResetPassword";
 
 const router = createBrowserRouter([{
   path: "/",
@@ -45,6 +47,15 @@ const router = createBrowserRouter([{
     {
       path: "register",
       element: <Register />
+    },
+    {
+      path: "forgetpassword",
+      element: <ForgetPassword />
+    },
+    {
+      path: "exms/resetpassword/:token",
+      element: <ResetPassword />,
+      loader: getResetToken
     },
     {
       path: "pricing",

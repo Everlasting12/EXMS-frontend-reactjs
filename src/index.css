@@ -25,3 +25,7 @@
 .paperWindow::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+.w-custom{
+  width: 100px!important;
+}
