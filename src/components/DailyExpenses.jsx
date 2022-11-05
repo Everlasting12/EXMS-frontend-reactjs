@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllDailyExpenses } from "../redux/actions/dailyExpensesAction";
 import { getAllHouseholdForCurrentPrimaryUserAction } from "../redux/actions/householdsAction";
+import PopupModal from "./common/PopupModal";
 
 //
 // custom Hook
@@ -118,6 +119,7 @@ const DailyExpenses = () => {
       });
       array = [...f];
     }
+
     return { array, total: Atotal };
   }
 
@@ -188,48 +190,48 @@ const DailyExpenses = () => {
         </span>
       ) : (
         <div className="h-[calc(100%-150px)] w-full overflow-auto mt-4 ">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 sticky top-0">
+          <table className="w-full table-fixed text-sm text-left text-gray-500 dark:text-gray-400 sticky top-0">
             <thead className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
               <tr className="sticky top-0 font-nunito">
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[5%] py-2 px-2 font-extralight"
                 >
                   No.
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0  py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[10%] py-2 px-2 font-extralight"
                 >
                   Paid Date
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0  py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[20%]  py-2 px-2 font-extralight"
                 >
                   Expense Type
                 </th>
                 <th
                   scope="col"
-                  className="sticky  top-0 py-2 px-2 font-extralight"
+                  className="sticky w-[25%] top-0 py-2 px-2 font-extralight"
                 >
                   Description
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[20%] py-2 px-2 font-extralight"
                 >
                   Paid By
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[12%] py-2 px-2 font-extralight"
                 >
                   Amount
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-2 font-extralight"
+                  className="sticky top-0 w-[8%] py-2 px-2 font-extralight"
                 >
                   Action
                 </th>
@@ -267,9 +269,8 @@ const DailyExpenses = () => {
                   <td
                     scope="row"
                     className=" py-2 px-2  font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    title={de.description}
                   >
-                    {de.description.substring(0, 15)}...
+                    {de.description}
                   </td>
                   <td
                     scope="row"
@@ -294,43 +295,12 @@ const DailyExpenses = () => {
         </div>
       )}
 
-      <div
-        className={`${
-          expandDailyExpense ? "flex" : "hidden"
-        } h-screen w-full absolute bg-gray-500/40 top-0 left-0 items-center justify-center`}
-      >
-        <div
-          ref={domNode}
-          className="h-3/5 w-2/4 bg-white text-black rounded-md shadow-lg flex items-center justify-center"
-        >
-          {dailyExp.map((de) => {
-            return (
-              <div key={de._id} className="p-1 w-5/6 h-5/6">
-                <div className=" w-full flex py-1 border-b">
-                  <span className="w-1/2">Household Name:</span>
-                  <span className="w-1/2"> {de.householdName}</span>
-                </div>
-                <div className="w-full flex py-1 border-b">
-                  <span className="w-1/2">Expense Type:</span>
-                  <span className="w-1/2">{de.expenseTypeName}</span>
-                </div>
-                <div className="w-full flex py-1 border-b">
-                  <span className="w-1/2">Paid By</span>
-                  <span className="w-1/2">{de.paidBy}</span>
-                </div>
-                <div className="w-full flex py-1 border-b">
-                  <span className="w-1/2">Expense Type:</span>
-                  <span className="w-1/2">{de.expenseTypeName}</span>
-                </div>
-                <div className="w-full flex py-1 border-b">
-                  <span className="w-1/2">Expense Type:</span>
-                  <span className="w-1/2">{de.expenseTypeName}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <PopupModal
+        array={dailyExp}
+        isPopUpOpen={expandDailyExpense}
+        domNode={domNode}
+        ExpName={"Daily"}
+      />
     </>
   );
 };

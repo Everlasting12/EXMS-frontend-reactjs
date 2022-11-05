@@ -50,12 +50,12 @@ const PrimaryUserDashboard = () => {
     dispatch(getAllExpenseTypesAction(""));
   }, []);
 
-  // useEffect(() => {
-  //   if (loggedInUser)
-  //     dispatch(
-  //       getAllHouseholdForCurrentPrimaryUserAction(loggedInUser._id, "")
-  //     );
-  // }, [loggedInUser]);
+  useEffect(() => {
+    if (loggedInUser)
+      dispatch(
+        getAllHouseholdForCurrentPrimaryUserAction(loggedInUser._id, "")
+      );
+  }, [loggedInUser]);
 
   const handleLogOut = () => {
     dispatch(logoutUser());
@@ -125,7 +125,7 @@ const PrimaryUserDashboard = () => {
       </div>
 
       {/* right side */}
-      <div className="h-full w-full px-8 pb-5" style={{ flex: "9" }}>
+      <div className="h-full w-full  px-8 pb-5" style={{ flex: "9" }}>
         <div className="h-[70px] flex items-center">
           <span className="text-xl"> Primary User Dashboard</span>
         </div>

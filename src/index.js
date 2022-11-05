@@ -71,7 +71,6 @@ const router = createBrowserRouter([{
       children: [
         {
           index: true,
-          path: "household",
           element: <Household />
         },
         {
@@ -83,7 +82,16 @@ const router = createBrowserRouter([{
           element: < HouseholdForm />
         },
         {
+          path: "household/householdForm",
+          element: < HouseholdForm />
+        },
+        {
           path: "household/householdForm/:householdId",
+          element: <HouseholdForm />,
+          loader: getHouseholdById
+        },
+        {
+          path: "household/household/householdForm/:householdId",
           element: <HouseholdForm />,
           loader: getHouseholdById
         },
@@ -128,15 +136,26 @@ const router = createBrowserRouter([{
       path: "member",
       element: <ProtectedRoute><MemberDashboard /></ProtectedRoute>,
       children: [
+
+        // {
+        //  index:true,
+        //   element: <PeriodicPayments />
+        // },
+        {
+          index: true,
+          element: <BasePage />
+        },
         {
           path: "periodicExpenses",
           element: <PeriodicPayments />
         },
+
         {
           path: "periodicExpenses/periodicExpenseForm/:periodicExpenseId",
           element: <PeriodicExpenseForm />,
           loader: getPeriodicExpenseById,
         },
+
         {
           path: "dailyExpenses",
           element: <DailyExpenses />
@@ -154,7 +173,6 @@ const router = createBrowserRouter([{
       children: [
         {
           index: true,
-          path: "expenseType",
           element: <ExpenseTypes />
         },
         {
@@ -168,6 +186,15 @@ const router = createBrowserRouter([{
         },
         {
           path: "expenseType/expenseTypeForm/:expenseTypeId",
+          element: <ExpenseTypesForm />,
+          loader: getExpenseTypeById
+        },
+        {
+          path: "expenseType/expenseTypeForm",
+          element: <ExpenseTypesForm />
+        },
+        {
+          path: "expenseType/expenseType/expenseTypeForm/:expenseTypeId",
           element: <ExpenseTypesForm />,
           loader: getExpenseTypeById
         },

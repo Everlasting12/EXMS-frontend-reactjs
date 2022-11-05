@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { MdOutlineEdit, MdSearch } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAllHouseholdForCurrentPrimaryUserAction } from "../redux/actions/householdsAction";
+import { getloggedInUserDetails } from "../redux/actions/loginAction";
 import { getAllPeriodicExpenseAction } from "../redux/actions/periodicExpenseAction";
+import PopupModal from "./common/PopupModal";
 
 const frequency = [
   { title: "Yesterday", date: 1 * 86400000 },
@@ -15,6 +18,24 @@ const frequency = [
   { title: "Last year", date: 365 * 86400000 },
 ];
 
+let useClickOutside = (handler) => {
+  let domNode = useRef();
+
+  useEffect(() => {
+    let mayBeHandler = (event) => {
+      if (!domNode.current.contains(event.target)) {
+        handler();
+      }
+    };
+    document.addEventListener("mousedown", mayBeHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", mayBeHandler);
+    };
+  });
+  return domNode;
+};
+
 const PeriodicPayments = () => {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.loginReducer.user);
@@ -22,6 +43,9 @@ const PeriodicPayments = () => {
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState("");
   const [role, setRole] = useState(loggedInUser.role);
+
+  const [expandPeriodicExpense, setExpandPeriodicExpense] = useState(false);
+  const [periodicExp, setPeriodicExp] = useState([]);
 
   useEffect(() => {
     dispatch(getAllPeriodicExpenseAction());
@@ -147,6 +171,16 @@ const PeriodicPayments = () => {
     return array;
   }
 
+  let domNode = useClickOutside(() => {
+    setExpandPeriodicExpense(false);
+    setPeriodicExp([]);
+  });
+
+  const handleShowDetails = (id, periodicExp) => {
+    setExpandPeriodicExpense((prev) => !prev);
+    setPeriodicExp([periodicExp]);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center my-3">
@@ -236,42 +270,42 @@ const PeriodicPayments = () => {
         </span>
       ) : (
         <div className="h-[calc(100%-150px)] w-full overflow-auto mt-4 ">
-          <table className="w-full  text-sm text-left text-gray-500 dark:text-gray-400">
+          <table className="w-full table-fixed  text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 text-white bg-[#3F7BDA] dark:bg-gray-700 dark:text-gray-400">
               <tr className="sticky top-0 font-nunito">
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-6 font-extralight"
+                  className="sticky w-[5%] top-0 py-2 px-6 font-extralight"
                 >
                   No.
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0  py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[15%]  py-2 px-6 font-extralight"
                 >
                   Due Date
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0  py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[20%]  py-2 px-6 font-extralight"
                 >
                   Expense Type
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 w-custom py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[30%]  py-2 px-6 font-extralight"
                 >
                   Description
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[20%] py-2 px-6 font-extralight"
                 >
                   Household
                 </th>
                 <th
                   scope="col"
-                  className="sticky top-0 py-2 px-6 font-extralight"
+                  className="sticky top-0 w-[10%] py-2 px-6 font-extralight"
                 >
                   Actions
                 </th>
@@ -293,10 +327,15 @@ const PeriodicPayments = () => {
                       "/" +
                       new Date(pe.dueDate).getFullYear()}
                   </td>
-                  <td className=" py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <td
+                    // style={{ wordWrap: "break-word" }}
+                    // break-words
+                    // break-normal
+                    className=" py-2 px-6 font-medium   text-gray-900  dark:text-white"
+                  >
                     {pe.expensetype}
                   </td>
-                  <td className="py-2 px-6 break-words font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <td className="py-2 px-6 break-words font-medium text-gray-900  dark:text-white">
                     {pe.description}
                   </td>
                   <td className="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -317,7 +356,7 @@ const PeriodicPayments = () => {
                     })} */}
                     {pe.householdName}
                   </td>
-                  <td className="py-2 px-6 flex ">
+                  <td className=" py-3 px-2 flex justify-center ">
                     <Link to={`periodicExpenseForm/${pe._id}`}>
                       <MdOutlineEdit
                         size={20}
@@ -325,11 +364,11 @@ const PeriodicPayments = () => {
                       />
                     </Link>
 
-                    {/* <MdDeleteOutline
+                    <FaEye
                       size={20}
                       className="text-[#3F7BDA] bg-slate-50 p-[5px] w-7 h-7 rounded-full cursor-pointer hover:bg-slate-100 focus:bg-slate-100 ml-2"
-                      onClick={() => handleDelete(pe._id)}
-                    /> */}
+                      onClick={() => handleShowDetails(pe._id, pe)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -337,6 +376,13 @@ const PeriodicPayments = () => {
           </table>
         </div>
       )}
+
+      <PopupModal
+        array={periodicExp}
+        isPopUpOpen={expandPeriodicExpense}
+        ExpName={"Periodic"}
+        domNode={domNode}
+      />
     </>
   );
 };
